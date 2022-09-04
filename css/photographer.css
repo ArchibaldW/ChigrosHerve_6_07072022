@@ -1,12 +1,138 @@
+.media {
+    width: 350px;
+    height: 300px;
+    object-fit: cover;
+}
+
+.flex{
+    display: flex;
+}
+
+.justify_space_between{
+    justify-content: space-between;
+}
+
+
 #contact_modal {
     display: none;
 }
 
-.photograph-header {
+#photograph_header {
     background-color: #FAFAFA;
-    height: 300px;
+    height: 313px;
     margin: 0 100px;
+    padding: 0 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
+
+#photograph_header>div h1 {
+    margin: 0;
+    color: #D3573C;
+    font-size: 64px;
+    font-weight: 400;
+}
+
+#photograph_header>div h2 {
+    margin: 0;
+    color: #901C1C;
+    font-size: 24px;
+    font-weight: 400;
+}
+
+#photograph_header>div :last-child {
+    margin: 0;
+    font-size: 18px;
+    color: #525252;
+}
+
+#photograph_header img {
+    height: 200px;
+    width: 200px;
+    border-radius: 100px;
+    object-fit: cover;
+}
+
+#sort {
+    margin: 9px 0 31px 100px;
+    font-size: 18px;
+}
+
+#sort select{
+    font-size: 18px;
+    background-color: #901C1C;
+    color: white;
+    padding: 20px;
+}
+
+#sort select option{
+    padding: 20px;
+}
+
+#photograph_medias {
+    margin: 0 100px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+#photograph_medias article {
+    width: calc(100% / 3);
+    max-width: 350px;
+    margin: 30px 10px 0;
+}
+
+#photograph_medias article > :last-child {
+    margin-top: 8px;
+}
+
+
+
+#photograph_medias .article_title{
+    font-size: 24px;
+    color: #901C1C;
+    max-width: 75%;
+}
+
+#photograph_medias .article_likes{
+    font-size: 17px;
+    color: #901C1C;
+    margin-right: 2px;
+}
+
+#photograph_medias .article_likes i{
+    margin-left: 6px;
+}
+
+#photograph_medias .article_likes.hide_full .fa-solid{
+    display: none;
+}
+
+#photograph_medias .article_likes.hide_empty .fa-regular{
+    display: none;
+}
+
+
+#like_price_insert{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background-color: #DB8876;
+    color: black;
+    padding: 20px 30px;
+    font-size: 24px;
+    font-weight: 500;
+}
+
+#like_price_insert > :first-child{
+    margin-right: 60px;
+}
+
+#like_price_insert > :first-child > i{
+    margin-left: 10px;
+}
+
 
 .contact_button {
     font-size: 20px;
@@ -74,3 +200,4 @@ form input {
     border: none;
     border-radius: 5px;
 }
+

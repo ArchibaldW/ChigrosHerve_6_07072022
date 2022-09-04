@@ -1,7 +1,6 @@
-class PhotographerCard {
+class HomePhotographerCard {
   constructor(photographer) {
     this._photographer = photographer
-    console.log(photographer)
   }
 
   createPhotographerCard() {

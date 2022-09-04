@@ -1,5 +1,5 @@
 class PhotographersFactory {
-    constructor(data, type){
+    constructor(data, type = "newJson"){
         if (type === "oldJson"){
             return new OldPhotographer(data)
         } else if (type === "newJson") {
