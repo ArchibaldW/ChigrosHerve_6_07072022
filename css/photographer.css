@@ -4,17 +4,34 @@
     object-fit: cover;
 }
 
-.flex{
+.flex {
     display: flex;
 }
 
-.justify_space_between{
+.justify_space_between {
     justify-content: space-between;
 }
 
 
 #contact_modal {
     display: none;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    justify-content: center;
+    height: 100vh;
+    align-items: center;
+    background-color: rgba(196,196,196, 0.4);
+}
+
+#contact_modal.display {
+    display: flex;
+}
+
+#contact_modal textarea {
+    width: 100%;
+    min-height: 170px
 }
 
 #photograph_header {
@@ -59,14 +76,14 @@
     font-size: 18px;
 }
 
-#sort select{
+#sort select {
     font-size: 18px;
     background-color: #901C1C;
     color: white;
     padding: 20px;
 }
 
-#sort select option{
+#sort select option {
     padding: 20px;
 }
 
@@ -83,38 +100,39 @@
     margin: 30px 10px 0;
 }
 
-#photograph_medias article > :last-child {
+#photograph_medias article> :last-child {
     margin-top: 8px;
 }
 
 
 
-#photograph_medias .article_title{
+#photograph_medias .article_title {
     font-size: 24px;
     color: #901C1C;
     max-width: 75%;
 }
 
-#photograph_medias .article_likes{
+#photograph_medias .article_likes {
     font-size: 17px;
     color: #901C1C;
     margin-right: 2px;
 }
 
-#photograph_medias .article_likes i{
+#photograph_medias .article_likes i {
     margin-left: 6px;
+    cursor: pointer;
 }
 
-#photograph_medias .article_likes.hide_full .fa-solid{
+#photograph_medias .article_likes.hide_full .fa-solid {
     display: none;
 }
 
-#photograph_medias .article_likes.hide_empty .fa-regular{
+#photograph_medias .article_likes.hide_empty .fa-regular {
     display: none;
 }
 
 
-#like_price_insert{
+#like_price_insert {
     position: fixed;
     bottom: 0;
     right: 0;
@@ -125,11 +143,11 @@
     font-weight: 500;
 }
 
-#like_price_insert > :first-child{
+#like_price_insert> :first-child {
     margin-right: 60px;
 }
 
-#like_price_insert > :first-child > i{
+#like_price_insert> :first-child>i {
     margin-left: 10px;
 }
 
@@ -200,4 +218,3 @@ form input {
     border: none;
     border-radius: 5px;
 }
-
