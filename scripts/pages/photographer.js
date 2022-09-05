@@ -7,12 +7,12 @@ function displayPhotographerData(photographer) {
 
 function displayMediasData(medias) {
     const mediasSection = document.getElementById("photograph_medias");
+    mediasSection.innerHTML = ''
     const Medias = medias.map(media => new MediasFactory(media))
     Medias.forEach(media => {
         const Template = new MediaCard(media)
         mediasSection.appendChild(Template.createPhotographerCard())
     })
-    sortMedias("likes")
 }
 
 async function init() {
@@ -20,12 +20,12 @@ async function init() {
     const id = parseInt(new URLSearchParams(window.location.search).get("id"))
     const photographer = await (new Api("/data/photographers.json")).get("photographers", id);
     displayPhotographerData(photographer);
-    const medias = await (new Api("/data/photographers.json")).get("medias", id);
-    displayMediasData(medias)
-    initListeners();
-    setInsert(photographer[0], medias)
+    const mediasData = await sortMedias("likes", id)
+    console.log(mediasData)
+    displayMediasData(mediasData)
+    initListeners(id);
+    setInsert(photographer[0], mediasData)
     initLikes();
-
 }
 
 function setInsert(photographer, medias) {
@@ -36,15 +36,16 @@ function setInsert(photographer, medias) {
     })
     parentNode.querySelector("span:first-child").innerHTML = `<span id="total_likes">${totalLikes}</span><i class="fa-solid fa-heart"></i>`
     parentNode.querySelector("span:last-child").innerHTML = `${photographer.price}€ /jour`
-
 }
 
 init();
 
-
-function initListeners() {
-    const sortSelect = document.getElementById('sort_select')
-    sortSelect.addEventListener('change', () => sortMedias(sortSelect.value))
+function initListeners(id) {
+    const dropdownText = document.querySelector('.dropbtn-text')
+    dropdownText.addEventListener('DOMSubtreeModified', async () => {
+        const medias = await sortMedias(Object.keys(filterArray).find(key => filterArray[key] === dropdownText.textContent), id)
+        displayMediasData(medias)
+    })
     const emptyHeart = document.querySelectorAll(".article_likes > .fa-regular")
     emptyHeart.forEach(htmlElement => {
         htmlElement.addEventListener('click', () => likeElement(htmlElement))
@@ -60,7 +61,10 @@ function initLikes() {
     if (localStorageDatas) {
         const mediasLiked = JSON.parse(localStorageDatas)
         mediasLiked.forEach(id => {
-            domChangesLike(document.querySelector(`[data-id='${id}'] .fa-regular`))
+            const elementLiked = document.querySelector(`[data-id='${id}'] .fa-regular`)
+            if (elementLiked) {
+                domChangesLike(elementLiked)
+            }
         })
     }
 }
@@ -106,28 +110,18 @@ function domChangesDislike(htmlElement) {
     document.getElementById("total_likes").innerHTML = parseInt(document.getElementById("total_likes").innerHTML) - 1
 }
 
-function sortMedias(filter) {
-    const parentNode = document.getElementById("photograph_medias")
-    const medias = parentNode.childNodes
-    let mediasArray = []
-    for (let i in medias) {
-        if (medias[i].nodeType == 1) {
-            mediasArray.push(medias[i]);
-        }
-    }
-    mediasArray.sort((mediaA, mediaB) => {
+async function sortMedias(filter, id) {
+    const medias = await (new Api("/data/photographers.json")).get("medias", id);
+    medias.sort((mediaA, mediaB) => {
         if (filter === "title") {
-            return compareText(mediaA.querySelector('.article_title').innerHTML, mediaB.querySelector('.article_title').innerHTML)
+            return compareText(mediaA.title, mediaB.title)
         } else if (filter === "likes") {
-            return compareNumbers(parseInt((mediaA.querySelector('.article_likes > .likes_number').innerHTML)), parseInt((mediaB.querySelector('.article_likes > .likes_number').innerHTML)))
+            return compareNumbers(mediaA.likes, mediaB.likes)
         } else if (filter === "date") {
-            return compareDates(mediaA.querySelector('div').dataset.date, mediaB.querySelector('div').dataset.date)
+            return compareDates(mediaA.date, mediaB.date)
         }
-
     })
-    mediasArray.forEach(media => {
-        parentNode.appendChild(media)
-    })
+    return medias
 }
 
 function compareNumbers(number1, number2) {
@@ -142,4 +136,29 @@ function compareDates(string1, string2) {
     const date1 = new Date(string1)
     const date2 = new Date(string2)
     return date1 < date2 ? 1 : date1 > date2 ? -1 : 0
+}
+
+let filterArray = []
+filterArray['likes'] = 'Popularité'
+filterArray['title'] = 'Titre'
+filterArray['date'] = 'Date'
+
+window.onclick = function (event) {
+    if (!event.target.matches('.dropbtn')) {
+        document.getElementById('sort').classList.remove('dropdown_open');
+        document.querySelector(".dropdown-content").classList.remove('show');
+        document.querySelector('.fa-solid.fa-chevron-up').classList.remove('show');
+        document.querySelector('.fa-solid.fa-chevron-down').classList.add('show')
+    }
+}
+
+function openDropdown() {
+    document.getElementById('sort').classList.add('dropdown_open');
+    document.querySelector(".dropdown-content").classList.add("show");
+    document.querySelector('.fa-solid.fa-chevron-up').classList.add('show')
+    document.querySelector('.fa-solid.fa-chevron-down').classList.remove('show');
+}
+
+function dropdownChoice(filter) {
+    document.querySelector(".dropbtn-text").textContent = filterArray[filter]
 }

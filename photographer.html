@@ -16,12 +16,19 @@
   <main id="main">
     <div id="photograph_header"></div>
     <div id="sort">
-      <label for="sort_select">Trier par</label>
-      <select id="sort_select" name="sort_select">
-        <option value="likes">Popularité</option>
-        <option value="date">Date</option>
-        <option value="title">Titre</option>
-      </select>
+      <div onclick="openDropdown()" class="dropbtn">
+        <span class="dropbtn-text">
+          Popularité
+        </span>
+        <i class="fa-solid fa-chevron-up"></i>
+        <i class="fa-solid fa-chevron-down show"></i></div>
+      <div id="myDropdown" class="dropdown-content">
+        <a onclick="dropdownChoice('likes')">Popularité</a>
+        <div class="line"></div>
+        <a onclick="dropdownChoice('title')">Titre</a>
+        <div class="line"></div>
+        <a onclick="dropdownChoice('date')">Date</a>
+      </div>
     </div>
     <div id="photograph_medias"></div>
   </main>
