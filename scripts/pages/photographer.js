@@ -178,7 +178,6 @@ function closeModal() {
 }
 
 var slideIndex = 0;
-showSlides(slideIndex);
 
 // Next/previous controls
 function plusSlides(n) {
@@ -193,15 +192,12 @@ function currentSlide(n) {
 function showSlides(n) {
     var i;
     var slides = document.getElementsByClassName("slide");
-    console.log(slides)
     if (n > slides.length-1) {
         slideIndex = 0
     }
     if (n < 0) {
         slideIndex = slides.length -1
     }
-    
-    console.log(n, slideIndex)
     for (i = 0; i < slides.length; i++) {
         slides[i].classList.remove("show");
     }
