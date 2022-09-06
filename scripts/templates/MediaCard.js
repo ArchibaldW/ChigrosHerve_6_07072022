@@ -3,14 +3,15 @@ class MediaCard {
     this._media = media
   }
 
-  createPhotographerCard() {
+  createPhotographerCard(index) {
     const article = document.createElement('article');
     article.innerHTML = ''
     if (this._media.picture) {
       article.innerHTML += `
-      <img class="media" src="/assets/medias/${this._media.photographerId}/${this._media.picture}" alt="">`
+      <img class="media hover-shadow" onclick="openModal();currentSlide(${index})" src="/assets/medias/${this._media.photographerId}/${this._media.picture}" alt="">`
+
     } else if (this._media.video) {
-      article.innerHTML += `<video class="media"><source src="/assets/medias/${this._media.photographerId}/${this._media.video}"></source></video>`
+      article.innerHTML += `<video class="media hover-shadow" onclick="openModal();currentSlide(${index})"><source src="/assets/medias/${this._media.photographerId}/${this._media.video}"></source></video>`
     }
     article.innerHTML +=
       `
@@ -20,5 +21,23 @@ class MediaCard {
       </div>
       `
     return (article);
+  }
+
+  createPhotographerLightboxCard(index) {
+    const div = document.createElement('div');
+    div.classList.add("slide")
+    div.innerHTML = ''
+    if (this._media.picture) {
+      div.innerHTML += `
+      <img onclick="openModal();currentSlide(${index})" src="/assets/medias/${this._media.photographerId}/${this._media.picture}" alt="">`
+      
+    } else if (this._media.video) {
+      div.innerHTML += `<video controls onclick="openModal();currentSlide(${index})"><source src="/assets/medias/${this._media.photographerId}/${this._media.video}"></source></video>`
+    }
+    div.innerHTML +=
+      `
+      <div class="article_title">${this._media.title}</div>
+      `
+    return (div);
   }
 }

@@ -1,5 +1,7 @@
 @import url("photographer.css");
 @import url("dropdown.css");
+@import url("lightbox.css");
+
 
 body {
     font-family: "DM Sans", sans-serif;

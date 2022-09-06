@@ -8,10 +8,14 @@ function displayPhotographerData(photographer) {
 function displayMediasData(medias) {
     const mediasSection = document.getElementById("photograph_medias");
     mediasSection.innerHTML = ''
+    const mediasSlides = document.getElementById("media_slides");
+    mediasSlides.innerHTML = ''
     const Medias = medias.map(media => new MediasFactory(media))
-    Medias.forEach(media => {
+    Medias.forEach((media, index) => {
         const Template = new MediaCard(media)
-        mediasSection.appendChild(Template.createPhotographerCard())
+        mediasSection.appendChild(Template.createPhotographerCard(index))
+        mediasSlides.appendChild(Template.createPhotographerLightboxCard(index))
+
     })
 }
 
@@ -161,4 +165,45 @@ function openDropdown() {
 
 function dropdownChoice(filter) {
     document.querySelector(".dropbtn-text").textContent = filterArray[filter]
+}
+
+// Open the Modal
+function openModal() {
+    document.getElementById("lightbox_modal").classList.add("show");
+}
+
+// Close the Modal
+function closeModal() {
+    document.getElementById("lightbox_modal").classList.remove("show");
+}
+
+var slideIndex = 0;
+showSlides(slideIndex);
+
+// Next/previous controls
+function plusSlides(n) {
+    showSlides(slideIndex += n);
+}
+
+// Thumbnail image controls
+function currentSlide(n) {
+    showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+    var i;
+    var slides = document.getElementsByClassName("slide");
+    console.log(slides)
+    if (n > slides.length-1) {
+        slideIndex = 0
+    }
+    if (n < 0) {
+        slideIndex = slides.length -1
+    }
+    
+    console.log(n, slideIndex)
+    for (i = 0; i < slides.length; i++) {
+        slides[i].classList.remove("show");
+    }
+    slides[slideIndex].classList.add("show");
 }
