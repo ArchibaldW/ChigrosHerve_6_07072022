@@ -8,12 +8,12 @@ class PagePhotographerCard {
         this._htmlElement.innerHTML =
             `
             <div>
-                <h1>${this._photographer.name}</h1>
-                <h2>${this._photographer.location}</h2>
-                <div>${this._photographer.tagline}</div>
+                <h1 tabindex="0">${this._photographer.name}</h1>
+                <h2 tabindex="0">${this._photographer.location}</h2>
+                <div tabindex="0">${this._photographer.tagline}</div>
             </div>
-            <button class="contact_button" onclick="displayModal()">Contactez-moi</button>
-            <img src=${this._photographer.picture}>
+            <button id="open_contact_btn" class="contact_button" onclick="displayContactModal()">Contactez-moi</button>
+            <img tabindex="0" width="150px" src=${this._photographer.picture} alt="Photo de ${this._photographer.name}">
         `
     }
 }

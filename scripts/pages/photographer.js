@@ -1,5 +1,18 @@
-function displayPhotographerData(photographer) {
+let photographer = null
+
+let filterArray = {
+    likes: "Popularité",
+    title: 'Titre',
+    date: "Date"
+}
+
+let slideIndex = 0;
+
+const photographerId = parseInt(new URLSearchParams(window.location.search).get("id"))
+
+async function displayPhotographerData() {
     const photographersSection = document.getElementById("photograph_header");
+    photographer = await (new Api("/data/photographers.json")).get("photographers", photographerId);
     const Photographer = photographer.map(photographer => new PhotographersFactory(photographer))
     const Template = new PagePhotographerCard(Photographer[0], photographersSection)
     Template.createPhotographerCard();
@@ -13,21 +26,18 @@ function displayMediasData(medias) {
     const Medias = medias.map(media => new MediasFactory(media))
     Medias.forEach((media, index) => {
         const Template = new MediaCard(media)
-        mediasSection.appendChild(Template.createPhotographerCard(index))
+        mediasSection.appendChild(Template.createMediaCard(index))
         mediasSlides.appendChild(Template.createPhotographerLightboxCard(index))
-
     })
 }
 
+
 async function init() {
     // Récupère les datas des photographes
-    const id = parseInt(new URLSearchParams(window.location.search).get("id"))
-    const photographer = await (new Api("/data/photographers.json")).get("photographers", id);
-    displayPhotographerData(photographer);
-    const mediasData = await sortMedias("likes", id)
-    console.log(mediasData)
+    await displayPhotographerData(photographerId);
+    const mediasData = await sortMedias("likes", photographerId)
     displayMediasData(mediasData)
-    initListeners(id);
+    initListeners(photographerId);
     setInsert(photographer[0], mediasData)
     initLikes();
 }
@@ -42,14 +52,15 @@ function setInsert(photographer, medias) {
     parentNode.querySelector("span:last-child").innerHTML = `${photographer.price}€ /jour`
 }
 
-init();
 
-function initListeners(id) {
-    const dropdownText = document.querySelector('.dropbtn-text')
-    dropdownText.addEventListener('DOMSubtreeModified', async () => {
-        const medias = await sortMedias(Object.keys(filterArray).find(key => filterArray[key] === dropdownText.textContent), id)
-        displayMediasData(medias)
-    })
+
+function initListeners() {
+    const radios = document.querySelectorAll("input[name='sort']");
+    radios.forEach((radio) => {
+        radio.addEventListener('change', async () => {
+            await initRadioListerner(radio, radios)
+        });
+    });
     const emptyHeart = document.querySelectorAll(".article_likes > .fa-regular")
     emptyHeart.forEach(htmlElement => {
         htmlElement.addEventListener('click', () => likeElement(htmlElement))
@@ -58,6 +69,16 @@ function initListeners(id) {
     fullHeart.forEach(htmlElement => {
         htmlElement.addEventListener('click', () => dislikeElement(htmlElement))
     })
+}
+
+async function initRadioListerner(radioValue, radios) {
+    dropdownChoice(radioValue.value)
+    radios.forEach(radio => {
+        radio.parentElement.classList.remove("hide")
+    })
+    radioValue.parentElement.classList.add("hide")
+    const medias = await sortMedias(radioValue.value, photographerId)
+    displayMediasData(medias)
 }
 
 function initLikes() {
@@ -142,14 +163,11 @@ function compareDates(string1, string2) {
     return date1 < date2 ? 1 : date1 > date2 ? -1 : 0
 }
 
-let filterArray = []
-filterArray['likes'] = 'Popularité'
-filterArray['title'] = 'Titre'
-filterArray['date'] = 'Date'
 
 window.onclick = function (event) {
-    if (!event.target.matches('.dropbtn')) {
+    if (!event.target.matches('.dropbtn') && document.getElementById('sort').classList.contains('dropdown_open')) {
         document.getElementById('sort').classList.remove('dropdown_open');
+        document.querySelector('#sort .dropbtn').setAttribute('aria-selected', false)
         document.querySelector(".dropdown-content").classList.remove('show');
         document.querySelector('.fa-solid.fa-chevron-up').classList.remove('show');
         document.querySelector('.fa-solid.fa-chevron-down').classList.add('show')
@@ -158,6 +176,7 @@ window.onclick = function (event) {
 
 function openDropdown() {
     document.getElementById('sort').classList.add('dropdown_open');
+    document.querySelector('#sort .dropbtn').setAttribute('aria-selected', true)
     document.querySelector(".dropdown-content").classList.add("show");
     document.querySelector('.fa-solid.fa-chevron-up').classList.add('show')
     document.querySelector('.fa-solid.fa-chevron-down').classList.remove('show');
@@ -167,39 +186,42 @@ function dropdownChoice(filter) {
     document.querySelector(".dropbtn-text").textContent = filterArray[filter]
 }
 
+
 // Open the Modal
-function openModal() {
+function displayLightboxModal() {
     document.getElementById("lightbox_modal").classList.add("show");
 }
 
 // Close the Modal
-function closeModal() {
+function closeLightboxModal() {
     document.getElementById("lightbox_modal").classList.remove("show");
 }
 
-var slideIndex = 0;
+
 
 // Next/previous controls
-function plusSlides(n) {
-    showSlides(slideIndex += n);
+function plusSlides(slideNumber) {
+    showSlides(slideIndex += slideNumber);
 }
 
 // Thumbnail image controls
-function currentSlide(n) {
-    showSlides(slideIndex = n);
+function currentSlide(slideNumber) {
+    showSlides(slideIndex = slideNumber);
 }
 
-function showSlides(n) {
-    var i;
-    var slides = document.getElementsByClassName("slide");
-    if (n > slides.length-1) {
+function showSlides(slideNumber) {
+    let i = 0;
+    let slides = document.getElementsByClassName("slide");
+    if (slideNumber > slides.length - 1) {
         slideIndex = 0
     }
-    if (n < 0) {
-        slideIndex = slides.length -1
+    if (slideNumber < 0) {
+        slideIndex = slides.length - 1
     }
     for (i = 0; i < slides.length; i++) {
         slides[i].classList.remove("show");
     }
     slides[slideIndex].classList.add("show");
 }
+
+init();

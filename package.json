@@ -16,6 +16,8 @@
     "url": "https://github.com/ArchibaldW/ChigrosHerve_6_07072022/issues"
   },
   "homepage": "https://github.com/ArchibaldW/ChigrosHerve_6_07072022#readme",
-  "dependencies": {},
+  "dependencies": {
+    "@khanacademy/tota11y": "^0.2.0"
+  },
   "devDependencies": {}
 }

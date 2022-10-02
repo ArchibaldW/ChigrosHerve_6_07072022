@@ -1,72 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <head>
   <link href="css/style.css" rel="stylesheet" type="text/css" />
   <meta charset="utf-8">
   <link rel="icon" type="image/png" href="assets/favicon.png">
   <link href="https://fonts.googleapis.com/css?family=DM+Sans&display=swap" rel="stylesheet">
-  <title>Fisheye - photographe </title>
+  <title>Fisheye - photographe</title>
 </head>
 
 <body>
-  <header>
-    <a href="/index.html"><img src="assets/medias/logo.png" class="logo" alt="Fisheye Home page" /></a>
+  <header role="banner">
+    <a href="/index.html">
+      <img src="assets/medias/logo.png" class="logo" alt="Fisheye Home page" />
+    </a>
   </header>
   <main id="main">
-    <div id="photograph_header"></div>
-    <div id="sort">
-      <div onclick="openDropdown()" class="dropbtn">
-        <span class="dropbtn-text">
-          Popularité
-        </span>
-        <i class="fa-solid fa-chevron-up"></i>
-        <i class="fa-solid fa-chevron-down show"></i></div>
-      <div id="myDropdown" class="dropdown-content">
-        <a onclick="dropdownChoice('likes')">Popularité</a>
-        <div class="line"></div>
-        <a onclick="dropdownChoice('title')">Titre</a>
-        <div class="line"></div>
-        <a onclick="dropdownChoice('date')">Date</a>
+    <section id="photograph_header"></section>
+    <nav id="sort">
+      <label>Trier par</label>
+      <div aria-label="Tri des médias" role="checkbox">
+        <div onclick="openDropdown()" onkeydown="openDropdown()" class="dropbtn" aria-selected="false" tabindex="0">
+          <span class="dropbtn-text">
+            Popularité
+          </span>
+          <em class="fa-solid fa-chevron-up"></em>
+          <em class="fa-solid fa-chevron-down show"></em></div>
+        <div id="myDropdown" class="dropdown-content">
+          <div tabindex="0" class="hide">
+            <label for="likes">Popularité</label>
+            <input type="radio" id="likes" name="sort" value="likes">
+          </div>
+          <div tabindex="0">
+            <label for="title">Titre</label>
+            <input type="radio" id="title" name="sort" value="title">
+          </div>
+          <div tabindex="0">
+            <label for="date">Date</label>
+            <input type="radio" id="date" name="sort" value="date">
+          </div>
+        </div>
       </div>
-    </div>
-    <div id="photograph_medias"></div>
+    </nav>
+    <section id="photograph_medias"></section>
   </main>
 
-  <div id="like_price_insert">
+  <section tabindex="1" id="like_price_insert">
     <span></span>
     <span></span>
-  </div>
-  <div id="contact_modal">
+  </section>
+  <div id="contact_modal" role=”dialog”>
     <div class="modal">
       <header>
-        <h2>Contactez-moi</h2>
-        <img src="assets/icons/close.svg" onclick="closeModal()" />
+        <h2>Contactez-moi <span id="modal_photographer_name"></span></h2>
+        <img src="assets/icons/close.svg" onClick="closeContactModal()" alt="Close Contact Form" />
       </header>
       <form>
         <div>
-          <label for="prenom">Prénom</label>
-          <input id="prenom" />
+          <label for="firstName">Prénom</label>
+          <input type="text" name="firstName" id="firstName" required pattern="[A-Za-z -]{1,32}" />
         </div>
 
         <div>
-          <label for="nom">Nom</label>
-          <input id="nom" />
+          <label for="lastName">Nom</label>
+          <input type="text" name="lastName" id="lastName" required pattern="[A-Za-z -]{1,32}" />
         </div>
         <div>
           <label for="email">Email</label>
-          <input id="email" />
+          <input type="text" name="email" id="email" required
+            pattern="^[a-z]([.-]{0,1}[a-z0-9]+)*@[a-z0-9]([.-]{0,1}[a-z0-9]+)*\.[a-z0-9]{2,4}$" />
         </div>
         <div>
           <label for="message">Votre message</label>
-          <textarea id="message"></textarea>
+          <textarea name="message" id="message" required minlength="2"></textarea>
         </div>
-        <button class="contact_button">Envoyer</button>
+        <button id="submit_form" class="contact_button" type="submit">Envoyer</button>
       </form>
     </div>
   </div>
-  <div id="lightbox_modal">
-    <span class="close cursor" onclick="closeModal()">&times;</span>
+  <div id="lightbox_modal" role=”dialog”>
+    <span class="close cursor" onclick="closeLightboxModal()">
+      <img src="assets/icons/close-lightbox.svg" onClick="closeContactModal()" alt="Close Contact Form" />
+    </span>
     <div class="modal-content">
 
       <div id="media_slides">
