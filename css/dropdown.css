@@ -20,9 +20,25 @@
   font-weight: 700;
 }
 
-#sort .dropbtn{
+#dropbtn{
   background-color: #901C1C;
   color: white;
+  padding: 20px;
+  min-width: 130px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#dropbtn em {
+  display: none;
+  pointer-events: none;
+  font-weight: 700;
+}
+
+#dropbtn em.show {
+  display: inline-block;
+  margin-left: 26px;
 }
 
 .dropdown-content {
@@ -51,29 +67,10 @@
   display: block;
 }
 
-#sort .dropbtn {
-  padding: 20px;
-  min-width: 130px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-#sort .dropbtn-text {
+.dropbtn-text {
   pointer-events: none;
   font-weight: 700;
   font-size: 18px;
-}
-
-#sort .dropbtn em {
-  display: none;
-  pointer-events: none;
-  font-weight: 700;
-}
-
-#sort .dropbtn em.show {
-  display: inline-block;
-  margin-left: 26px;
 }
 
 #sort .line{

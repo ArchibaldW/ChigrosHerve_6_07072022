@@ -10,9 +10,9 @@
 </head>
 
 <body>
-  <header role="banner">
+  <header id="header" role="banner">
     <a href="/index.html">
-      <img src="assets/medias/logo.png" class="logo" alt="Fisheye Home page" />
+      <img src="assets/medias/logo.png" class="logo" alt="Fisheye Home page"/>
     </a>
   </header>
   <main id="main">
@@ -20,7 +20,7 @@
     <nav id="sort">
       <label>Trier par</label>
       <div aria-label="Tri des médias" role="checkbox">
-        <div onclick="openDropdown()" onkeydown="openDropdown()" class="dropbtn" aria-selected="false" tabindex="0">
+        <div id="dropbtn" onclick="openDropdown()" onkeydown="openDropdown()" aria-selected="false" tabindex="0">
           <span class="dropbtn-text">
             Popularité
           </span>
@@ -44,8 +44,7 @@
     </nav>
     <section id="photograph_medias"></section>
   </main>
-
-  <section tabindex="1" id="like_price_insert">
+  <section tabindex="0" id="like_price_insert">
     <span></span>
     <span></span>
   </section>
@@ -53,17 +52,17 @@
     <div class="modal">
       <header>
         <h2>Contactez-moi <span id="modal_photographer_name"></span></h2>
-        <img src="assets/icons/close.svg" onClick="closeContactModal()" alt="Close Contact Form" />
+        <img tabindex="0" id="close_modal" src="assets/icons/close.svg" alt="Close Contact Form" />
       </header>
       <form>
         <div>
           <label for="firstName">Prénom</label>
-          <input type="text" name="firstName" id="firstName" required pattern="[A-Za-z -]{1,32}" />
+          <input type="text" name="firstName" id="firstName" required pattern=".{3,32}" />
         </div>
 
         <div>
           <label for="lastName">Nom</label>
-          <input type="text" name="lastName" id="lastName" required pattern="[A-Za-z -]{1,32}" />
+          <input type="text" name="lastName" id="lastName" required pattern=".{3,32}" />
         </div>
         <div>
           <label for="email">Email</label>
