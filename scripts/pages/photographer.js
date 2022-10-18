@@ -52,6 +52,14 @@ function setInsert(photographer, medias) {
     parentNode.querySelector("span:last-child").innerHTML = `${photographer.price}€ /jour`
 }
 
+function updateInsert(medias) {
+    let totalLikes = 0
+    medias.forEach(media => {
+        totalLikes += media.likes
+    })
+    document.querySelector('#like_price_insert span:first-child').innerHTML = `<span id="total_likes">${totalLikes}</span><i class="fa-solid fa-heart"></i>`
+}
+
 
 
 function initListeners() {
@@ -75,6 +83,38 @@ function initListeners() {
             closeDropdown()
         })
     })
+    initLikesListeners()
+
+    document.getElementById('open_contact_btn').addEventListener('click', () => displayContactModal())
+    document.getElementById('open_contact_btn').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            displayContactModal()
+        }
+    })
+
+    document.querySelector('#lightbox_modal .prev').addEventListener('click', () => plusSlides(-1))
+    document.querySelector('#lightbox_modal .prev').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter'){
+            plusSlides(-1)
+        }
+    })
+
+    document.querySelector('#lightbox_modal .next').addEventListener('click', () => plusSlides(1))
+    document.querySelector('#lightbox_modal .next').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter'){
+            plusSlides(1)
+        }
+    })
+
+    document.querySelector('#lightbox_modal .close').addEventListener('click', () => closeLightboxModal())
+    document.querySelector('#lightbox_modal .close').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter'){
+            closeLightboxModal()
+        }
+    })
+}
+
+function initLikesListeners() {
     const emptyHeart = document.querySelectorAll(".article_likes > .fa-regular")
     emptyHeart.forEach(htmlElement => {
         htmlElement.addEventListener('click', () => likeElement(htmlElement))
@@ -83,11 +123,17 @@ function initListeners() {
     fullHeart.forEach(htmlElement => {
         htmlElement.addEventListener('click', () => dislikeElement(htmlElement))
     })
-    document.getElementById('open_contact_btn').addEventListener('click', () => displayContactModal())
-    document.getElementById('open_contact_btn').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            displayContactModal()
-        }
+    const likes = document.querySelectorAll(".article_likes")
+    likes.forEach(htmlElement => {
+        htmlElement.addEventListener("keydown", (e) => {
+            if (e.key === 'Enter') {
+                if (htmlElement.classList.contains("hide_empty")) {
+                    dislikeElement(htmlElement.querySelector(".fa-solid"))
+                } else if (htmlElement.classList.contains("hide_full")) {
+                    likeElement(htmlElement.querySelector(".fa-regular"))
+                }
+            }
+        })
     })
 }
 
@@ -99,6 +145,9 @@ async function initRadioListerner(radioValue, radios) {
     radioValue.parentElement.classList.add("hide")
     const medias = await sortMedias(radioValue.value, photographerId)
     displayMediasData(medias)
+    initLikesListeners()
+    updateInsert(medias)
+    initLikes();
 }
 
 function initLikes() {
@@ -212,15 +261,28 @@ function dropdownChoice(filter) {
 
 // Open the Modal
 function displayLightboxModal() {
+    document.getElementById("main").classList.add("hide")
+    document.getElementById("header").classList.add("hide")
     document.getElementById("lightbox_modal").classList.add("show");
+    document.querySelector('#lightbox_modal .close').focus()
+}
+
+function displayKeyLightboxModal(e) {
+    if (e.key === "Enter") {
+        displayLightboxModal()
+    }
 }
 
 // Close the Modal
 function closeLightboxModal() {
+    document.getElementById("main").classList.remove("hide")
+    document.getElementById("header").classList.remove("hide")
     document.getElementById("lightbox_modal").classList.remove("show");
 }
 
-
+function initLightboxListeners() {
+    displayKeyLightboxModal
+}
 
 // Next/previous controls
 function plusSlides(slideNumber) {

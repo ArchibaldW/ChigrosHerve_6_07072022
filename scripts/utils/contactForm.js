@@ -3,7 +3,6 @@ const modal = document.getElementById("contact_modal");
 
 
 function displayContactModal() {
-    console.log("pouet")
     modal.classList.add("display");
     document.getElementById("main").classList.add("hide")
     document.getElementById("header").classList.add("hide")
