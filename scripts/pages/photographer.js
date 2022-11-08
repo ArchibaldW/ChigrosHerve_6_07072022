@@ -1,211 +1,52 @@
-let photographer = null
+let photographerData = null
 
-let filterArray = {
+const photographerId = parseInt(new URLSearchParams(window.location.search).get("id"))
+
+let textArray = {
     likes: "Popularité",
     title: 'Titre',
     date: "Date"
 }
 
-let slideIndex = 0;
-
-const photographerId = parseInt(new URLSearchParams(window.location.search).get("id"))
-
-async function displayPhotographerData() {
-    const photographersSection = document.getElementById("photograph_header");
-    photographer = await (new Api("/data/photographers.json")).get("photographers", photographerId);
-    const Photographer = photographer.map(photographer => new PhotographersFactory(photographer))
-    const Template = new PagePhotographerCard(Photographer[0], photographersSection)
-    Template.createPhotographerCard();
+/**
+ * Compare two numbers
+ * @param {number} number1 
+ * @param {number} number2 
+ * @return {number}
+ */
+function compareNumbers(number1, number2) {
+    return number1 < number2 ? 1 : number1 > number2 ? -1 : 0
 }
 
-function displayMediasData(medias) {
-    const mediasSection = document.getElementById("photograph_medias");
-    mediasSection.innerHTML = ''
-    const mediasSlides = document.getElementById("media_slides");
-    mediasSlides.innerHTML = ''
-    const Medias = medias.map(media => new MediasFactory(media))
-    Medias.forEach((media, index) => {
-        const Template = new MediaCard(media)
-        mediasSection.appendChild(Template.createMediaCard(index))
-        mediasSlides.appendChild(Template.createPhotographerLightboxCard(index))
-    })
+/**
+ * Compare two texts
+ * @param {string} text1 
+ * @param {string} text2 
+ * @return {number}
+ */
+function compareText(text1, text2) {
+    return text1.localeCompare(text2)
 }
 
-
-async function init() {
-    // Récupère les datas des photographes
-    await displayPhotographerData(photographerId);
-    const mediasData = await sortMedias("likes", photographerId)
-    displayMediasData(mediasData)
-    initListeners(photographerId);
-    setInsert(photographer[0], mediasData)
-    initLikes();
+/**
+ * Compare two dates passed as string
+ * @param {string} string1 
+ * @param {string} string2 
+ * @return {number}
+ */
+function compareDates(string1, string2) {
+    const date1 = new Date(string1)
+    const date2 = new Date(string2)
+    return date1 < date2 ? 1 : date1 > date2 ? -1 : 0
 }
 
-function setInsert(photographer, medias) {
-    const parentNode = document.getElementById("like_price_insert")
-    let totalLikes = 0
-    medias.forEach(media => {
-        totalLikes += media.likes
-    })
-    parentNode.querySelector("span:first-child").innerHTML = `<span id="total_likes">${totalLikes}</span><i class="fa-solid fa-heart"></i>`
-    parentNode.querySelector("span:last-child").innerHTML = `${photographer.price}€ /jour`
-}
-
-function updateInsert(medias) {
-    let totalLikes = 0
-    medias.forEach(media => {
-        totalLikes += media.likes
-    })
-    document.querySelector('#like_price_insert span:first-child').innerHTML = `<span id="total_likes">${totalLikes}</span><i class="fa-solid fa-heart"></i>`
-}
-
-
-
-function initListeners() {
-    const radios = document.querySelectorAll("input[name='sort']");
-    radios.forEach((radio) => {
-        radio.addEventListener('change', async () => {
-            await initRadioListerner(radio, radios)
-        });
-        radio.addEventListener('keydown', (e) => {
-            console.log(e.key)
-        });
-    });
-    const dropdownChoice = document.querySelectorAll("#myDropdown div")
-    dropdownChoice.forEach((choice) => {
-        choice.addEventListener('keydown', async (e) => {
-            if (e.key === 'Enter') {
-                const radio = choice.querySelector("input[name='sort']")
-                radio.checked = true
-                await initRadioListerner(radio, radios)
-            }
-            closeDropdown()
-        })
-    })
-    initLikesListeners()
-
-    document.getElementById('open_contact_btn').addEventListener('click', () => displayContactModal())
-    document.getElementById('open_contact_btn').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            displayContactModal()
-        }
-    })
-
-    document.querySelector('#lightbox_modal .prev').addEventListener('click', () => plusSlides(-1))
-    document.querySelector('#lightbox_modal .prev').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter'){
-            plusSlides(-1)
-        }
-    })
-
-    document.querySelector('#lightbox_modal .next').addEventListener('click', () => plusSlides(1))
-    document.querySelector('#lightbox_modal .next').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter'){
-            plusSlides(1)
-        }
-    })
-
-    document.querySelector('#lightbox_modal .close').addEventListener('click', () => closeLightboxModal())
-    document.querySelector('#lightbox_modal .close').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter'){
-            closeLightboxModal()
-        }
-    })
-}
-
-function initLikesListeners() {
-    const emptyHeart = document.querySelectorAll(".article_likes > .fa-regular")
-    emptyHeart.forEach(htmlElement => {
-        htmlElement.addEventListener('click', () => likeElement(htmlElement))
-    })
-    const fullHeart = document.querySelectorAll(".article_likes > .fa-solid")
-    fullHeart.forEach(htmlElement => {
-        htmlElement.addEventListener('click', () => dislikeElement(htmlElement))
-    })
-    const likes = document.querySelectorAll(".article_likes")
-    likes.forEach(htmlElement => {
-        htmlElement.addEventListener("keydown", (e) => {
-            if (e.key === 'Enter') {
-                if (htmlElement.classList.contains("hide_empty")) {
-                    dislikeElement(htmlElement.querySelector(".fa-solid"))
-                } else if (htmlElement.classList.contains("hide_full")) {
-                    likeElement(htmlElement.querySelector(".fa-regular"))
-                }
-            }
-        })
-    })
-}
-
-async function initRadioListerner(radioValue, radios) {
-    dropdownChoice(radioValue.value)
-    radios.forEach(radio => {
-        radio.parentElement.classList.remove("hide")
-    })
-    radioValue.parentElement.classList.add("hide")
-    const medias = await sortMedias(radioValue.value, photographerId)
-    displayMediasData(medias)
-    initLikesListeners()
-    updateInsert(medias)
-    initLikes();
-}
-
-function initLikes() {
-    const localStorageDatas = localStorage.getItem("mediasLiked")
-    if (localStorageDatas) {
-        const mediasLiked = JSON.parse(localStorageDatas)
-        mediasLiked.forEach(id => {
-            const elementLiked = document.querySelector(`[data-id='${id}'] .fa-regular`)
-            if (elementLiked) {
-                domChangesLike(elementLiked)
-            }
-        })
-    }
-}
-
-function likeElement(htmlElement) {
-    domChangesLike(htmlElement)
-    const parent = htmlElement.parentNode
-    const id = parent.parentNode.dataset.id
-    let mediasLiked = null
-    const localStorageDatas = localStorage.getItem("mediasLiked")
-    if (localStorageDatas) {
-        mediasLiked = JSON.parse(localStorageDatas)
-        mediasLiked.push(id)
-    } else {
-        mediasLiked = [id]
-    }
-    localStorage.setItem("mediasLiked", JSON.stringify(mediasLiked))
-}
-
-function domChangesLike(htmlElement) {
-    const parent = htmlElement.parentNode
-    parent.classList.add("hide_empty")
-    parent.classList.remove("hide_full")
-    parent.querySelector(".likes_number").innerHTML = parseInt(parent.querySelector(".likes_number").innerHTML) + 1
-    document.getElementById("total_likes").innerHTML = parseInt(document.getElementById("total_likes").innerHTML) + 1
-}
-
-function dislikeElement(htmlElement) {
-    domChangesDislike(htmlElement)
-    const parent = htmlElement.parentNode
-    const id = parent.parentNode.dataset.id
-    let mediasLiked = null
-    const localStorageDatas = JSON.parse(localStorage.getItem("mediasLiked"))
-    mediasLiked = localStorageDatas.filter(element => parseInt(element) !== parseInt(id))
-    localStorage.setItem("mediasLiked", JSON.stringify(mediasLiked))
-}
-
-function domChangesDislike(htmlElement) {
-    const parent = htmlElement.parentNode
-    parent.classList.add("hide_full")
-    parent.classList.remove("hide_empty")
-    parent.querySelector(".likes_number").innerHTML = parseInt(parent.querySelector(".likes_number").innerHTML) - 1
-    document.getElementById("total_likes").innerHTML = parseInt(document.getElementById("total_likes").innerHTML) - 1
-}
-
-async function sortMedias(filter, id) {
-    const medias = await (new Api("/data/photographers.json")).get("medias", id);
+/**
+ * Retrieve all medias and sort them with functions depending of the filter
+ * @param {string} filter 
+ * @return {Array<any>}
+ */
+async function sortMedias(filter) {
+    const medias = await (new Api("/data/photographers.json")).get("medias", photographerId);
     medias.sort((mediaA, mediaB) => {
         if (filter === "title") {
             return compareText(mediaA.title, mediaB.title)
@@ -218,26 +59,9 @@ async function sortMedias(filter, id) {
     return medias
 }
 
-function compareNumbers(number1, number2) {
-    return number1 < number2 ? 1 : number1 > number2 ? -1 : 0
-}
-
-function compareText(text1, text2) {
-    return text1.localeCompare(text2)
-}
-
-function compareDates(string1, string2) {
-    const date1 = new Date(string1)
-    const date2 = new Date(string2)
-    return date1 < date2 ? 1 : date1 > date2 ? -1 : 0
-}
-
-window.onclick = function (event) {
-    if (!event.target.matches('#dropbtn') && document.getElementById('sort').classList.contains('dropdown_open')) {
-        closeDropdown()
-    }
-}
-
+/**
+ * Close the dropdown menu
+ */
 function closeDropdown() {
     document.getElementById('sort').classList.remove('dropdown_open');
     document.querySelector('#dropbtn').setAttribute('aria-selected', false)
@@ -246,6 +70,10 @@ function closeDropdown() {
     document.querySelector('.fa-solid.fa-chevron-down').classList.add('show')
 }
 
+
+/**
+ * Open the dropdown menu
+ */
 function openDropdown() {
     document.getElementById('sort').classList.add('dropdown_open');
     document.querySelector('#dropbtn').setAttribute('aria-selected', true)
@@ -254,59 +82,133 @@ function openDropdown() {
     document.querySelector('.fa-solid.fa-chevron-down').classList.remove('show');
 }
 
-function dropdownChoice(filter) {
-    document.querySelector(".dropbtn-text").textContent = filterArray[filter]
+/**
+ * Set the text of the dropdown button according to the choosen text
+ * @param {string} text 
+ */
+ function setDropdownText(text) {
+    document.querySelector(".dropbtn-text").textContent = textArray[text]
 }
 
-
-// Open the Modal
-function displayLightboxModal() {
-    document.getElementById("main").classList.add("hide")
-    document.getElementById("header").classList.add("hide")
-    document.getElementById("lightbox_modal").classList.add("show");
-    document.querySelector('#lightbox_modal .close').focus()
-}
-
-function displayKeyLightboxModal(e) {
-    if (e.key === "Enter") {
-        displayLightboxModal()
+/**
+ * If click outside of the dropdown, close the dropdown menu
+ * @param {any} event 
+ */
+window.onclick = function (event) {
+    if (!event.target.matches('#dropbtn') && document.getElementById('sort').classList.contains('dropdown_open')) {
+        closeDropdown()
     }
 }
 
-// Close the Modal
-function closeLightboxModal() {
-    document.getElementById("main").classList.remove("hide")
-    document.getElementById("header").classList.remove("hide")
-    document.getElementById("lightbox_modal").classList.remove("show");
+
+/**
+ * Update likes values of the like/price insert bottom left of the page
+ * @param {Array<any>} medias 
+ */
+ function updateLikePriceInsert(medias) {
+    let totalLikes = 0
+    medias.forEach(media => {
+        totalLikes += media.likes
+    })
+    document.querySelector('#like_price_insert span:first-child').innerHTML = `<span id="total_likes">${totalLikes}</span><i class="fa-solid fa-heart"></i>`
 }
 
-function initLightboxListeners() {
-    displayKeyLightboxModal
+/**
+ * Set first values of the like/price insert bottom left of the page
+ * @param {Array<any>} medias 
+ */
+function setLikePriceInsert(medias) {
+    const parentNode = document.getElementById("like_price_insert")
+    let totalLikes = 0
+    medias.forEach(media => {
+        totalLikes += media.likes
+    })
+    parentNode.querySelector("span:first-child").innerHTML = `<span id="total_likes">${totalLikes}</span><i class="fa-solid fa-heart"></i>`
+    parentNode.querySelector("span:last-child").innerHTML = `${photographerData[0].price}€ /jour`
 }
 
-// Next/previous controls
-function plusSlides(slideNumber) {
-    showSlides(slideIndex += slideNumber);
+/**
+ * Reset page media and display new mediasData array
+ * @param {Array<any>} mediasData 
+ */
+ function displayMediasData(mediasData) {
+    const mediasSection = document.getElementById("photograph_medias");
+    const mediasSlides = document.getElementById("media_slides");
+    mediasSection.innerHTML = ''
+    mediasSlides.innerHTML = ''
+    const medias = mediasData.map(media => new MediasFactory(media))
+    medias.forEach((media, index) => {
+        const template = new MediaCard(media)
+        mediasSection.appendChild(template.createMediaCard(index))
+        mediasSlides.appendChild(template.createPhotographerLightboxCard(index))
+    })
 }
 
-// Thumbnail image controls
-function currentSlide(slideNumber) {
-    showSlides(slideIndex = slideNumber);
+/**
+ * 
+ * @param {HTMLElement} radioValue 
+ * @param {Array<any>} radios 
+ */
+async function radioListernerAction(radioElement, radios) {
+    setDropdownText(radioElement.value)
+    radios.forEach(radio => {
+        radio.parentElement.classList.remove("hide")
+    })
+    radioValue.parentElement.classList.add("hide")
+    const medias = await sortMedias(radioElement.value)
+    displayMediasData(medias)
+    initLikesListeners()
+    updateLikePriceInsert(medias)
+    initMediasLikes();
 }
 
-function showSlides(slideNumber) {
-    let i = 0;
-    let slides = document.getElementsByClassName("slide");
-    if (slideNumber > slides.length - 1) {
-        slideIndex = 0
-    }
-    if (slideNumber < 0) {
-        slideIndex = slides.length - 1
-    }
-    for (i = 0; i < slides.length; i++) {
-        slides[i].classList.remove("show");
-    }
-    slides[slideIndex].classList.add("show");
+/**
+ * Init radios and dropdown listeners
+ */
+function initRadiosDropdownListeners() {
+    const radios = document.querySelectorAll("input[name='sort']");
+    radios.forEach((radio) => {
+        radio.addEventListener('change', async () => {
+            await radioListernerAction(radio, radios)
+        });
+    });
+    const dropdownChoice = document.querySelectorAll("#myDropdown div")
+    dropdownChoice.forEach((choice, index) => {
+        choice.addEventListener('keydown', async (e) => {
+            if (e.key === 'Enter') {
+                const radio = choice.querySelector("input[name='sort']")
+                radio.checked = true
+                await radioListernerAction(radio, radios)
+            }
+            if (index === dropdownChoice.length -1){
+                closeDropdown()
+            }
+        })
+    })
+}
+
+/**
+ * Display the photographer datas at top of the page
+ */
+async function displayPhotographerData() {
+    const photographersSection = document.getElementById("photograph_header");
+    photographerData = await (new Api("/data/photographers.json")).get("photographers", photographerId);
+    const photographer = photographerData.map(photographer => new PhotographersFactory(photographer))
+    const template = new PagePhotographerCard(photographer[0], photographersSection)
+    template.createPhotographerCard();
+}
+
+/**
+ * First init of the photographer page
+ */
+async function init() {
+    await displayPhotographerData(photographerId);
+    const mediasData = await sortMedias("likes")
+    displayMediasData(mediasData)//
+    initRadiosDropdownListeners();
+    initLikesListeners();
+    setLikePriceInsert(mediasData)
+    initMediasLikes();
 }
 
 init();

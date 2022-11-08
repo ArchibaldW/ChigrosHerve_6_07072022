@@ -8,13 +8,13 @@ class MediaCard {
     article.innerHTML = ''
     if (this._media.picture) {
       article.innerHTML += `
-      <img class="media hover-shadow" onkeydown="displayKeyLightboxModal(event);currentSlide(${index})" onclick="displayLightboxModal();currentSlide(${index})" 
+      <img class="media hover-shadow" onkeydown="displayKeyLightboxModal(event);showSlide(${index})" onclick="displayLightboxModal();showSlide(${index})" 
         src="/assets/medias/${this._media.photographerId}/${this._media.picture}" alt="${this._media.title}" 
         tabindex="0" role="link">`
     } else if (this._media.video) {
       article.innerHTML += `
       <video type="video/mp4" tabindex="0" alt="${this._media.title}" role="link" 
-        class="media hover-shadow" onkeydown="displayKeyLightboxModal(event);currentSlide(${index})" onclick="displayLightboxModal();currentSlide(${index})">
+        class="media hover-shadow" onkeydown="displayKeyLightboxModal(event);showSlide(${index})" onclick="displayLightboxModal();showSlide(${index})">
         <source src="/assets/medias/${this._media.photographerId}/${this._media.video}"></source>
       </video>`
     }
@@ -34,9 +34,9 @@ class MediaCard {
     article.innerHTML = ''
     if (this._media.picture) {
       article.innerHTML += `
-      <img tabindex="0" onkeydown="displayKeyLightboxModal(event);currentSlide(${index})" onclick="displayLightboxModal();currentSlide(${index})" src="/assets/medias/${this._media.photographerId}/${this._media.picture}" alt="${this._media.title}">`
+      <img tabindex="0" onkeydown="displayKeyLightboxModal(event);showSlide(${index})" onclick="displayLightboxModal();showSlide(${index})" src="/assets/medias/${this._media.photographerId}/${this._media.picture}" alt="${this._media.title}">`
     } else if (this._media.video) {
-      article.innerHTML += `<video tabindex="0" controls onkeydown="displayKeyLightboxModal(event);currentSlide(${index})" onclick="displayLightboxModal();currentSlide(${index})"><source src="/assets/medias/${this._media.photographerId}/${this._media.video}"></source></video>`
+      article.innerHTML += `<video tabindex="0" controls onkeydown="displayKeyLightboxModal(event);showSlide(${index})" onclick="displayLightboxModal();showSlide(${index})"><source src="/assets/medias/${this._media.photographerId}/${this._media.video}"></source></video>`
     }
     article.innerHTML +=
       `
