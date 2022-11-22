@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 class Photographer {
-  constructor(data) {
+  constructor (data) {
     this._name = data.name
     this._id = data.id
     this._location = data.location
@@ -8,27 +9,27 @@ class Photographer {
     this._portrait = data.portrait
   }
 
-  get name() {
+  get name () {
     return this._name
   }
 
-  get id() {
+  get id () {
     return this._id
   }
 
-  get location() {
+  get location () {
     return `${this._location.city}, ${this._location.country}`
   }
 
-  get tagline() {
+  get tagline () {
     return this._tagline
   }
 
-  get price() {
+  get price () {
     return `${this._price}€/jour`
   }
 
-  get picture() {
+  get picture () {
     return `/assets/photographers/${this._portrait}`
   }
 }

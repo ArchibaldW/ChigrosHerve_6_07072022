@@ -1,10 +1,11 @@
+/* eslint-disable no-unused-vars */
 class MediaCard {
-  constructor(media) {
+  constructor (media) {
     this._media = media
   }
 
-  createMediaCard(index) {
-    const article = document.createElement('article');
+  createMediaCard (index) {
+    const article = document.createElement('article')
     article.innerHTML = ''
     if (this._media.picture) {
       article.innerHTML += `
@@ -25,12 +26,12 @@ class MediaCard {
         <div class="article_likes hide_full" aria-label="${this._media.likes} likes" tabindex="0"><span class="likes_number"  >${this._media.likes}</span><i class="fa-solid fa-heart"></i><i class="fa-regular fa-heart"></i></div>
       </div>
       `
-    return (article);
+    return (article)
   }
 
-  createPhotographerLightboxCard(index) {
-    const article = document.createElement('article');
-    article.classList.add("slide")
+  createPhotographerLightboxCard (index) {
+    const article = document.createElement('article')
+    article.classList.add('slide')
     article.innerHTML = ''
     if (this._media.picture) {
       article.innerHTML += `
@@ -42,6 +43,6 @@ class MediaCard {
       `
       <div class="article_title">${this._media.title}</div>
       `
-    return (article);
+    return (article)
   }
 }

@@ -1,12 +1,13 @@
+/* eslint-disable no-unused-vars */
 class HomePhotographerCard {
-  constructor(photographer) {
+  constructor (photographer) {
     this._photographer = photographer
   }
 
-  createPhotographerCard() {
-    const article = document.createElement('article');
-    article.id='photographer-'+this._photographer.id
-    article.innerHTML = 
+  createPhotographerCard () {
+    const article = document.createElement('article')
+    article.id = 'photographer-' + this._photographer.id
+    article.innerHTML =
     `
     <a href="./photographer.html?id=${this._photographer.id}" title="${this._photographer.name}">
       <img src="${this._photographer.picture}" alt="Photo de ${this._photographer.name}">
@@ -18,6 +19,6 @@ class HomePhotographerCard {
       <p tabindex="0" class="price">${this._photographer.price}</p>
     </div>
     `
-    return (article);
+    return (article)
   }
 }

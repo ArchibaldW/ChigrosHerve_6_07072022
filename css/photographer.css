@@ -94,6 +94,8 @@
     font-size: 17px;
     color: #901C1C;
     margin-right: 2px;
+    display: flex;
+    align-items: center;
 }
 
 #photograph_medias .article_likes i {

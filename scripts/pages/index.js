@@ -1,21 +1,27 @@
-function displayData(photographers, version) {
-    const photographersSection = document.querySelector(".photographer_section");
+/* eslint-disable no-undef */
+/**
+ * Display photographers data
+ * @param {Array<any>} photographers
+ */
+function displayData (photographers) {
+  const photographersSection = document.querySelector('.photographer_section')
 
-    const Photographers = photographers.map(photographer => new PhotographersFactory(photographer, version))
-    
-
-    Photographers.forEach((photographer) => {
-        const Template = new HomePhotographerCard(photographer)
-        photographersSection.appendChild(Template.createPhotographerCard());
-    });
+  photographers.forEach(photographer => {
+    const template = new HomePhotographerCard(photographer)
+    photographersSection.appendChild(template.createPhotographerCard())
+  })
 }
 
-async function init() {
-    // Récupère les datas des photographes
-    // const oldPhotographers = await (new Api("/data/oldPhotographers.json")).get("photographers");
-    // displayData(oldPhotographers, "oldJson");
-    const photographers = await (new Api("/data/photographers.json")).get("photographers");
-    displayData(photographers, "newJson");
+/**
+ * Init index page
+ */
+async function init () {
+  // Récupère les datas des photographes
+  // const oldPhotographers = await (new Api("/data/oldPhotographers.json")).get("photographers");
+  // displayData(oldPhotographers, "oldJson");
+  const photographers = await (new Api('/data/photographers.json')).get('photographers')
+  const photographersData = photographers.map(photographer => new PhotographersFactory(photographer, 'newJson'))
+  displayData(photographersData)
 }
 
-init();
+init()
